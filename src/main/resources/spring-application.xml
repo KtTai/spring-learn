@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="userDao" class="cn.kt.xml.dao.impl.UserDaoImpl"/>
+    <bean id="userService" class="cn.kt.xml.service.impl.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+    </bean>
+    <bean id="xmlLog" class="cn.kt.xml.aop.XmlLogTest"/>
+<!--    <bean id="myAdvice" class="cn.kt.xml.aop.advice.MyAdvice"/>-->
+
+    <aop:config>
+        <aop:pointcut id="logPointcut" expression="execution(* cn.kt.xml.service.*.userTest (..))"/>
+        <aop:pointcut id="logPointcut1" expression="execution(* cn.kt.xml.service.*.userTest1 (..))"/>
+        <aop:pointcut id="logPointcut2" expression="execution(* cn.kt.xml.service.*.userTest2 (..))"/>
+        <aop:aspect id="logUtil" ref="xmlLog">
+            <aop:before method="before" pointcut-ref="logPointcut"/>
+            <aop:after method="after" pointcut-ref="logPointcut"/>
+            <aop:after-returning returning="a" method="returnR" pointcut-ref="logPointcut1"/>
+            <aop:after-throwing method="throwEx" throwing="e" pointcut-ref="logPointcut1"/>
+            <aop:around method="aroundR" pointcut-ref="logPointcut2"/>
+        </aop:aspect>
+<!--        <aop:advisor advice-ref="myAdvice" pointcut-ref="logPointcut"/>-->
+    </aop:config>
+
+</beans>
